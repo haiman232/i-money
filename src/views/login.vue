@@ -1,3 +1,30 @@
+<script>
+import { ref } from "vue";
+import { useSignIn } from "@/composables/useSignIn";
+import { useRouter } from "vue-router";
+export default {
+  setup() {
+    const router = useRouter();
+    const { error, isPending, signin } = useSignIn();
+    const email = ref("");
+    const password = ref("");
+
+    async function onSubmit() {
+      await signin(email.value, password.value);
+      if (!error.value) router.push({ name: "Home", params: {} });
+    }
+
+    return {
+      onSubmit,
+      email,
+      password,
+      error,
+      isPending,
+    };
+  },
+};
+</script>
+
 <template>
   <div class="mt-8">
     <div class="container mx-auto px-8">
@@ -15,6 +42,7 @@
               class="px-4 py-3 rounded-lg border border-gray-100 mt-1"
               placeholder="example@gmail.com"
               autocomplete="username"
+              v-model="email"
           /></label>
         </div>
         <div class="row">
@@ -26,17 +54,32 @@
               class="px-4 py-3 rounded-lg border border-gray-100 mt-1"
               placeholder="password"
               autocomplete="current-password"
+              v-model="password"
           /></label>
         </div>
         <div class="row">
           <button
+            v-if="!isPending"
             type="submit"
             class="py-3 w-full text-center bg-primary text-white font-bold rounded-lg"
           >
             Sign In
           </button>
+
+          <button
+            v-if="isPending"
+            type="submit"
+            class="py-3 w-full text-center bg-gray-800 text-white font-bold rounded-lg cursor-not-allowed"
+            disabled
+          >
+            Loading
+          </button>
         </div>
       </form>
+      <!-- Start Error -->
+      <div v-if="error" class="text-left mt-4 text-red">
+        <span>{{ error }}</span>
+      </div>
       <!-- Start direction -->
       <div class="text-center w-full mt-6">
         <span class="semi-bold">I'm a user.</span>
@@ -51,13 +94,3 @@
     </div>
   </div>
 </template>
-<script>
-export default {
-  setup() {
-    function onSubmit() {}
-    return {
-      onSubmit,
-    };
-  },
-};
-</script>

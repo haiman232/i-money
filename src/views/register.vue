@@ -1,3 +1,33 @@
+<script>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useSignUp } from "@/composables/useSignUp";
+export default {
+  setup() {
+    const router = useRouter();
+    const { error, signup, isPending } = useSignUp();
+    const fullName = ref("");
+    const email = ref("");
+    const password = ref("");
+
+    //Kiểm tra thấy signup trả về Promise -> sử dụng async await
+    async function onSubmit() {
+      await signup(email.value, password.value, fullName.value);
+      if (!error.value) router.push({ name: "Home", params: {} });
+    }
+
+    return {
+      onSubmit,
+      fullName,
+      email,
+      password,
+      error,
+      isPending,
+    };
+  },
+};
+</script>
+
 <template>
   <div class="mt-8">
     <div class="container mx-auto px-8">
@@ -14,6 +44,7 @@
               type="text"
               class="px-4 py-3 rounded-lg border border-gray-100 mt-1"
               placeholder="IMoney..."
+              v-model="fullName"
           /></label>
         </div>
         <div class="row">
@@ -25,6 +56,7 @@
               class="px-4 py-3 rounded-lg border border-gray-100 mt-1"
               placeholder="example@gmail.com"
               autocomplete="username"
+              v-model="email"
           /></label>
         </div>
         <div class="row">
@@ -36,17 +68,32 @@
               class="px-4 py-3 rounded-lg border border-gray-100 mt-1"
               placeholder="password"
               autocomplete="current-password"
+              v-model="password"
           /></label>
         </div>
         <div class="row">
           <button
+            v-if="!isPending"
             type="submit"
             class="py-3 w-full text-center bg-primary text-white font-bold rounded-lg"
           >
             Sign Up
           </button>
+
+          <button
+            v-if="isPending"
+            type="submit"
+            class="py-3 w-full text-center bg-gray-800 text-white font-bold rounded-lg cursor-not-allowed"
+            disabled
+          >
+            Loading
+          </button>
         </div>
       </form>
+      <!-- Start Error -->
+      <div v-if="error" class="text-left mt-4 text-red">
+        <span>{{ error }}</span>
+      </div>
       <!-- Start direction -->
       <div class="text-center w-full mt-6">
         <span class="semi-bold">I'm already a member.</span>
@@ -61,13 +108,3 @@
     </div>
   </div>
 </template>
-<script>
-export default {
-  setup() {
-    function onSubmit() {}
-    return {
-      onSubmit,
-    };
-  },
-};
-</script>
