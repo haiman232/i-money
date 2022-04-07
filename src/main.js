@@ -3,9 +3,17 @@ import App from "./App.vue";
 import router from "./router";
 import "./assets/styles/tailwind.css";
 import "./assets/styles/global.css";
-import { registerGlobalComponent } from "./utils/import.js";
+import { registerGlobalComponents } from "./utils/import.js";
 
-const app = createApp(App);
-registerGlobalComponent(app);
-app.use(router);
-app.mount("#app");
+import { projectAuth } from "./configs/firebase";
+
+let app;
+
+projectAuth.onAuthStateChanged(() => {
+  if (!app) {
+    app = createApp(App);
+    registerGlobalComponents(app);
+    app.use(router);
+    app.mount("#app");
+  }
+});

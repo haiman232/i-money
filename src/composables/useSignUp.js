@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { projectAuth } from "@/config/firebase";
+import { projectAuth } from "@/configs/firebase";
 // Request lên server kiểu gì cũng có lỗi nên cần khai trước.
 const error = ref(null);
 // isPending Lưu trạng thái xem có đang request tới server không.

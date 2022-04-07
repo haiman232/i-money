@@ -13,7 +13,7 @@ export default {
     //Kiểm tra thấy signup trả về Promise -> sử dụng async await
     async function onSubmit() {
       await signup(email.value, password.value, fullName.value);
-      if (!error.value) router.push({ name: "Home", params: {} });
+      if (!error.value) router.push({ name: "Profile", params: {} });
     }
 
     return {

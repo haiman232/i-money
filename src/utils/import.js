@@ -3,7 +3,7 @@
 //Phải là defineAsyncComponent để chạy đồng bộ
 import { defineAsyncComponent } from "vue";
 
-export function registerGlobalComponent(app) {
+export function registerGlobalComponents(app) {
   app.component(
     "auth-layout",
     defineAsyncComponent(() => import("@/layouts/auth"))
